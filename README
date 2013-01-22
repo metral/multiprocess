@@ -11,11 +11,13 @@ with an instance-based LVM).
 The API requests are issued concurrently by using the python multiprocessing
 library.
 
+Required
+========
+Insert appropriate <URL>:<PORT> for each API in conf.py
 
 
 Usage
 =====
-Required: insert <API>:<PORT> for each API in conf.py
 
 i.e. Openstack account info:
 
@@ -28,4 +30,4 @@ example 1:
 $ python multiprocess.py "$OS_USERNAME" "$OS_PASSWORD" "$OS_TENANT_NAME" "$OS_TENANT_ID" <number_of_subprocesses_to_launch> <server_volume_quantity>
 
 example 2:
-$ python multiprocess.py 'john' 'password' 'MyTenant' '20acaeea1c2f469d84bc79acbc6cd6b8' 4 30
+$ python multiprocess.py 'john' 'password' 'MyTenant' '20acaeea1c2f469d84bc79acbc6cd6b8' 2 10
