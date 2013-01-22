@@ -1,0 +1,31 @@
+Description
+===========
+
+This tool is used to incur load on the various OpenStack API's.
+
+Specifically, it creates servers, volumes, retreives their respective statuses, and if
+the servers are 'ACTIVE' and volumes 'available', it will attach the volume to
+the server and execute the scripts in vm_scripts/ (which creates & interacts
+with an instance-based LVM).
+
+The API requests are issued concurrently by using the python multiprocessing
+library.
+
+
+
+Usage
+=====
+Required: insert <API>:<PORT> for each API in conf.py
+
+i.e. Openstack account info:
+
+OS_USERNAME='john'
+OS_PASSWORD='password'
+OS_TENANT_NAME='MyTenant'
+OS_TENANT_ID='20acaeea1c2f469d84bc79acbc6cd6b8'
+
+example 1:
+$ python multiprocess.py "$OS_USERNAME" "$OS_PASSWORD" "$OS_TENANT_NAME" "$OS_TENANT_ID" <number_of_subprocesses_to_launch> <server_volume_quantity>
+
+example 2:
+$ python multiprocess.py 'john' 'password' 'MyTenant' '20acaeea1c2f469d84bc79acbc6cd6b8' 4 30
