@@ -92,30 +92,20 @@ class Utils:
 
         return connections
 #-------------------------------------------------------------------------------
-    def server_status_conns(self, iterations, servers):
+    def server_status_conns(self, servers):
         connections = []
 
-        if len(servers) != iterations:
-            return None
-        
-        for i in range(0, iterations):
-            server_uuid = servers[i]
-            
+        for server_uuid in servers:
             url = self.NOVA_API
             path = "/".join(["/v2", self.OS_TENANT_ID, "servers", server_uuid])
             connections.append((url, path))
 
         return connections
 #-------------------------------------------------------------------------------
-    def volume_status_conns(self, iterations, volumes):
+    def volume_status_conns(self, volumes):
         connections = []
         
-        if len(volumes) != iterations:
-            return None
-        
-        for i in range(0, iterations):
-            volume_uuid = volumes[i]
-            
+        for volume_uuid in volumes:
             url = self.CINDER_API
             path = "/".join(["/v1", self.OS_TENANT_ID, "volumes", volume_uuid])
             connections.append((url, path))
@@ -125,39 +115,34 @@ class Utils:
     def volume_attach_conns(self, iterations, servers_created, volumes_created):
         connections = []
         
-        if (len(servers_created) != len(volumes_created)) and \
-                (len(servers_created) != iterations):
-            return None
-        
         for i in range(0, iterations):
-            server_uuid = servers_created[i]
-            volume_uuid = volumes_created[i]
+            try:
+                server_uuid = servers_created[i]
+            except:
+                server_uuid = None
+                pass
+            
+            try:
+                volume_uuid = volumes_created[i]
+            except:
+                volume_uuid = None
+                pass
 
-            url = self.NOVA_API
-            path = "/".join(["/v2", self.OS_TENANT_ID, "servers", \
-                    server_uuid, "os-volume_attachments"])
+            if server_uuid and volume_uuid:
+                url = self.NOVA_API
+                path = "/".join(["/v2", self.OS_TENANT_ID, "servers", \
+                        server_uuid, "os-volume_attachments"])
 
-            post_params = { 
-                    "volumeAttachment": {
-                        "volumeId": volume_uuid,
-                        "device": "/dev/vdc"
+                post_params = { 
+                        "volumeAttachment": {
+                            "volumeId": volume_uuid,
+                            "device": "/dev/vdc"
+                            }
                         }
-                    }
 
-            params = json.dumps(post_params)
-            connections.append((url, path, params))
+                params = json.dumps(post_params)
+                connections.append((url, path, params))
 
         return connections
-##-------------------------------------------------------------------------------
-#    def server_vol_attach_status_conns(self, server_uuid, volume_uuid):
-#        connections = []
-#
-#        ## compute
-#        # nova instances
-#        conn = httplib.HTTPConnection(CINDER_API)
-#        path = "/".join(["/v1", OS_TENANT_ID, "volumes", volume_uuid])
-#        connections.append((conn, path))
-#
-#        return connections
 #-------------------------------------------------------------------------------
 #===============================================================================

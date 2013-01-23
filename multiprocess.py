@@ -82,11 +82,11 @@ def server_create_posts(post):
     
     try:
         server_uuid = str(json_data['server']['id'])
+        if server_uuid:
+            global_server_creating.append(server_uuid)
     except:
         pass
     
-    if server_uuid:
-        global_server_creating.append(server_uuid)
 #-------------------------------------------------------------------------------
 def volume_create_posts(post):
     apitoken = get_x_auth_token()
@@ -104,11 +104,11 @@ def volume_create_posts(post):
     
     try:
         volume_uuid = str(json_data['volume']['id'])
+        if volume_uuid:
+            global_volume_creating.append(volume_uuid)
     except:
         pass
         
-    if volume_uuid:
-        global_volume_creating.append(volume_uuid)
 #-------------------------------------------------------------------------------
 def server_status_gets(get):
     while (True):
@@ -136,6 +136,10 @@ def server_status_gets(get):
         if (server_status == 'active'):
             global_server_created.append(server_uuid)
             print "Server Created: %s" % (server_uuid)
+            break 
+        elif (server_status == 'error'):
+            global_server_created.append(None)
+            print "Server Error: %s" % (server_uuid)
             break 
         else:
             time.sleep(2)
@@ -168,6 +172,10 @@ def volume_status_gets(get):
         elif (volume_status == 'in-use'):
             global_volume_created.append(volume_uuid)
             print "Volume Attached: %s" % (volume_uuid)
+            break 
+        if (volume_status == 'error'):
+            global_volume_created.append(None)
+            print "Volume Error: %s" % (volume_uuid)
             break 
         else:
             time.sleep(2)
@@ -207,25 +215,35 @@ utils = Utils(OS_USERNAME, OS_PASSWORD, OS_TENANT_NAME, OS_TENANT_ID, NOVA_API,
 pool = Pool(processes = os_processes)
 start_time = millis()
 
-# Send requests to create servers & volumes
+# Send requests to create volumes
+print "\nSending volume create requests ..."
 volume_create_conns = utils.volume_create_conns(iterations)
-server_create_conns = utils.server_create_conns(iterations)
 pool.map(volume_create_posts, volume_create_conns)
+
+# Send requests to retrieve the status of the newly created volumes
+print "\nSending volume status requests ..."
+volume_status_conns = utils.volume_status_conns(global_volume_creating)
+if volume_status_conns: pool.map(volume_status_gets, volume_status_conns)
+
+# Send requests to create servers
+print "\nSending server create requests ..."
+server_create_conns = utils.server_create_conns(iterations)
 pool.map(server_create_posts, server_create_conns)
 
-# Send requests to retrieve the status of the newly created servers & volumes
-volume_status_conns = utils.volume_status_conns(iterations, global_volume_creating)
-server_status_conns = utils.server_status_conns(iterations, global_server_creating)
-if volume_status_conns: pool.map(volume_status_gets, volume_status_conns)
+# Send requests to retrieve the status of the newly created servers
+print "\nSending server status requests ..."
+server_status_conns = utils.server_status_conns(global_server_creating)
 if server_status_conns: pool.map(server_status_gets, server_status_conns)
 
 # Send requests to attach volumes to servers
+print "\nSending attach requests ..."
 volume_attach_conns = utils.volume_attach_conns(iterations, \
         global_server_created, global_volume_created)
 if volume_attach_conns: pool.map(volume_attach_posts, volume_attach_conns)
 
 # Send requests to retrieve the status of the newly attached volumes to servers
-volume_status_conns = utils.volume_status_conns(iterations, global_volume_attaching)
+print "\nSending attach status requests ..."
+volume_status_conns = utils.volume_status_conns(global_volume_attaching)
 if volume_status_conns: pool.map(volume_status_gets, volume_status_conns)
 
 print "\nTotal took " + str(millis() - start_time) + " ms\n"
