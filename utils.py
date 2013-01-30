@@ -53,7 +53,7 @@ class Utils:
 
             post_params = { 
                     "server": {
-                        "flavorRef": "2",
+                        "flavorRef": "6",
                         "imageRef": "1a78df0f-c785-4742-86c6-49774e2d89f7",
                         "name": "foobar-server",
                         "key_name": "admin_rspublish",

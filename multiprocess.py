@@ -78,6 +78,9 @@ def server_create_posts(post):
 
     json_data = json.loads(res.read())
     
+    if int(res.status) != 202:
+        print json_data
+    
     server_uuid = ""
     
     try:
@@ -99,6 +102,9 @@ def volume_create_posts(post):
     res = conn.getresponse()
 
     json_data = json.loads(res.read())
+    
+    if int(res.status) != 200:
+        print json_data
     
     volume_uuid = ""
     
@@ -124,6 +130,9 @@ def server_status_gets(get):
         res = conn.getresponse()
 
         json_data = json.loads(res.read())
+        
+        if int(res.status) != 200:
+            print json_data
 
         try:
             server_status = \
@@ -159,6 +168,9 @@ def volume_status_gets(get):
 
         json_data = json.loads(res.read())
 
+        if int(res.status) != 200:
+            print json_data
+
         try:
             volume_status = str(json_data['volume']['status']).lower()
             volume_uuid = str(json_data['volume']['id']).lower()
@@ -192,6 +204,9 @@ def volume_attach_posts(post):
     res = conn.getresponse()
     
     json_data = json.loads(res.read())
+
+    if int(res.status) != 200:
+        print json_data
     
     server_uuid = ""
     volume_uuid = ""
