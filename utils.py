@@ -15,9 +15,14 @@ class Utils:
     GLANCE_API = ""
     KEYSTONE_API = ""
     SWIFT_API = ""
+    
+    FLAVOR_ID = ""
+    IMAGE_ID = ""
+    KEYPAIR_NAME = ""
 #-------------------------------------------------------------------------------
     def __init__(self, OS_USERNAME, OS_PASSWORD, OS_TENANT_NAME, OS_TENANT_ID,
-            NOVA_API, CINDER_API, GLANCE_API, KEYSTONE_API, SWIFT_API):
+            NOVA_API, CINDER_API, GLANCE_API, KEYSTONE_API, SWIFT_API,
+            FLAVOR_ID, IMAGE_ID, KEYPAIR_NAME):
         self.OS_USERNAME=OS_USERNAME
         self.OS_PASSWORD=OS_PASSWORD
         self.OS_TENANT_NAME=OS_TENANT_NAME
@@ -28,6 +33,10 @@ class Utils:
         self.GLANCE_API=GLANCE_API
         self.KEYSTONE_API=KEYSTONE_API
         self.SWIFT_API=SWIFT_API
+        
+        self.FLAVOR_ID = FLAVOR_ID
+        self.IMAGE_ID = IMAGE_ID
+        self.KEYPAIR_NAME = KEYPAIR_NAME
 #-------------------------------------------------------------------------------
     def b64_encode(self, filepath):
         b64 = ""
@@ -53,10 +62,10 @@ class Utils:
 
             post_params = { 
                     "server": {
-                        "flavorRef": "2",
-                        "imageRef": "1a78df0f-c785-4742-86c6-49774e2d89f7",
+                        "flavorRef": self.FLAVOR_ID,
+                        "imageRef": self.IMAGE_ID,
                         "name": "foobar-server",
-                        "key_name": "admin_rspublish",
+                        "key_name": self.KEYPAIR_NAME,
                         "personality": [
                             {
                                 "contents": b64_1,

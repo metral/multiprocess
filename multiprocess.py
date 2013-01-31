@@ -26,6 +26,10 @@ SWIFT_API = conf.SWIFT_API
 os_processes = int(sys.argv[5])
 iterations = int(sys.argv[6])
 
+FLAVOR_ID= str(sys.argv[7])
+IMAGE_ID = str(sys.argv[8])
+KEYPAIR_NAME = str(sys.argv[9])
+
 manager = Manager()
 
 global_server_creating = manager.list([])
@@ -225,7 +229,8 @@ def volume_attach_posts(post):
         global_volume_attaching.append(volume_uuid)
 #-------------------------------------------------------------------------------
 utils = Utils(OS_USERNAME, OS_PASSWORD, OS_TENANT_NAME, OS_TENANT_ID, NOVA_API,
-        CINDER_API, GLANCE_API, KEYSTONE_API, SWIFT_API)
+        CINDER_API, GLANCE_API, KEYSTONE_API, SWIFT_API, FLAVOR_ID, IMAGE_ID,
+        KEYPAIR_NAME)
 
 pool = Pool(processes = os_processes)
 start_time = millis()
