@@ -3,6 +3,8 @@
 #-------------------------------------------------------------------------------
 import sys
 import json
+from time import time
+import random
 #-------------------------------------------------------------------------------
 class Utils:
     OS_USERNAME = ""
@@ -47,6 +49,9 @@ class Utils:
             
         return b64
 #-------------------------------------------------------------------------------
+    def randomNumber(self):
+        return str(int(time())) + "-" + str(random.randint(10000000,99999999))
+#-------------------------------------------------------------------------------
     def server_create_conns(self, iterations):
         connections = []
 
@@ -64,7 +69,7 @@ class Utils:
                     "server": {
                         "flavorRef": self.FLAVOR_ID,
                         "imageRef": self.IMAGE_ID,
-                        "name": "foobar-server",
+                        "name": "foobar-server-" + self.randomNumber(),
                         "key_name": self.KEYPAIR_NAME,
                         "personality": [
                             {
@@ -93,7 +98,7 @@ class Utils:
             post_params = { 
                     "volume": {
                         "size": 1,
-                        "display_name": "foobar-vol",
+                        "display_name": "foobar-volume-" + self.randomNumber(),
                         }
                     }
             params = json.dumps(post_params)
